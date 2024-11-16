@@ -1,0 +1,103 @@
+body.xbox-theme {
+    background-color: #101820;
+    color: #a4c639;
+    font-family: 'Arial', sans-serif;
+}
+
+.nav-tabs .nav-link {
+    color: #a4c639;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #283618;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #006400;
+    border: none;
+}
+
+.btn-outline-light {
+    border-color: #a4c639;
+    color: #a4c639;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-light:hover {
+    background-color: #283618;
+    color: #fff;
+}
+
+input[type="text"],
+.form-control,
+select.form-select {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+input[type="text"].invalid {
+    border-color: #ff4d4d;
+    background-color: #442222;
+    color: #fff;
+}
+
+input[type="checkbox"].invalid {
+    border-color: #ff4d4d;
+    background-color: #442222;
+}
+
+.tab-invalid {
+    background-color: #ff4d4d !important;
+    color: #fff !important;
+}
+
+input[type="text"]::placeholder {
+    color: #ccc;
+}
+
+select.form-select option {
+    background-color: #333;
+    color: #fff;
+}
+
+.github-logo {
+    width: 32px;
+    height: 32px;
+}
+
+footer {
+    background-color: #101820;
+    padding: 10px;
+    color: #a4c639;
+}
+
+footer a {
+    color: #a4c639;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #fff;
+}
+
+.file-input {
+    display: none;
+}
+
+.custom-file-label {
+    display: inline-block;
+    border: 1px solid #a4c639;
+    color: #a4c639;
+    background-color: transparent;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-file-label:hover {
+    background-color: #1b2a18;
+    color: #fff;
+}

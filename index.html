@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xbox EEPROM Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="xbox-theme">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Original Xbox EEPROM Online</h1>
+        <div class="d-flex justify-content-end mb-3">
+            <button type="button" class="btn btn-success me-2" id="generateBtn" onclick="generateFile()" disabled>Download</button>
+            <input type="file" id="uploadFile" onchange="parseFile(this)" class="file-input">
+            <label for="uploadFile" class="btn btn-outline-light custom-file-label">Upload</label>
+        </div>
+        <ul class="nav nav-tabs" id="tabMenu" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="encrypted-tab" data-bs-toggle="tab" href="#encrypted" role="tab">Encrypted</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="factory-tab" data-bs-toggle="tab" href="#factory" role="tab">Factory Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="user-tab" data-bs-toggle="tab" href="#user" role="tab">User Settings</a>
+            </li>
+        </ul>
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="encrypted" role="tabpanel">
+                <form>
+                    <div class="mb-3">
+                        <label for="hardwareRevision" class="form-label">Hardware Revision</label>
+                        <select class="form-select" id="hardwareRevision" onchange="validateInputs()">
+                            <option value="0x09">Debug</option>
+                            <option value="0x0A">1.0</option>
+                            <option value="0x0B" selected>1.1-1.4</option>
+                            <option value="0x0C">1.6</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confounder" class="form-label">Confounder</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="confounder" data-eeprom="confounder_unencrypted" data-length="16" data-type="hexadecimal" oninput="validateInputs()">
+                            <button type="button" class="btn btn-secondary" onclick="generateHex(16, 'confounder')">Generate</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hddKey" class="form-label">Hard drive key</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="hddKey" data-eeprom="hdd_key_unencrypted" data-length="32" data-type="hexadecimal" oninput="validateInputs()">
+                            <button type="button" class="btn btn-secondary" onclick="generateHex(32, 'hddKey')">Generate</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="region" class="form-label">Xbox Region</label>
+                        <select class="form-select" id="region" data-eeprom="region_unencrypted" onchange="validateInputs()">
+                            <option value="0x00000001" selected>North America</option>
+                            <option value="0x00000002">Japan</option>
+                            <option value="0x00000004">Europe/Australia</option>
+                            <option value="0x80000000">Debug</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="factory" role="tabpanel">
+                <form>
+                    <div class="mb-3">
+                        <label for="serial" class="form-label">Serial</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="serial" data-eeprom="serial_number" data-length="12" data-type="decimal" oninput="validateInputs()">
+                            <button type="button" class="btn btn-secondary" onclick="generateDigits(12, 'serial')">Generate</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="macAddress" class="form-label">MAC Address</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="macAddress" data-eeprom="mac_address" data-length="12" data-type="hexadecimal" oninput="validateInputs()">
+                            <button type="button" class="btn btn-secondary" onclick="generateHex(12, 'macAddress', '0050F2')">Generate</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="onlineKey" class="form-label">Online Key</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="onlineKey" data-eeprom="online_key" data-length="32" data-type="hexadecimal" oninput="validateInputs()">
+                            <button type="button" class="btn btn-secondary" onclick="generateHex(32, 'onlineKey')">Generate</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="user" role="tabpanel">
+                <form>
+                    <div class="mb-3">
+                        <label for="timezoneData" class="form-label">Timezone Region 🗺️</label>
+                        <select class="form-select" id="timezoneData" data-eeprom="timezone_data" onchange="validateInputs()">
+                            <option value= "940200004E5400004E5400000000000000000000000000000000000000000000000000000000000000000000">Samoa (UTC-11)</option>
+                            <option value= "5802000048535400485354000000000000000000000000000000000000000000000000000000000000000000">Hawaii (UTC-10)</option>
+                            <option value= "1C020000595354005944540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Alaska (UTC-9)</option>
+                            <option value= "E0010000505354005044540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Pacific (UTC-8)</option>
+                            <option value= "A40100004D5354004D53540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Mountain (UTC-7)</option>
+                            <option value= "A40100004D5354004D5354000000000000000000000000000000000000000000000000000000000000000000">Arizona (UTC-7)</option>
+                            <option value= "6801000043435354434353540000000000000000000000000000000000000000000000000000000000000000">Saskatchewan (UTC-6)</option>
+                            <option value= "680100004D5354004D44540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Mexico City (UTC-6)</option>
+                            <option value= "68010000435354004344540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Central (UTC-6)</option>
+                            <option value= "6801000043415354434153540000000000000000000000000000000000000000000000000000000000000000">Central America (UTC-6)</option>
+                            <option value= "2C01000045535400455354000000000000000000000000000000000000000000000000000000000000000000">Indiana (UTC-5)</option>
+                            <option value= "2C010000455354004544540000000000000000000A05000204010002000000000000000000000000C4FFFFFF" selected>Eastern (UTC-5)</option>
+                            <option value= "2C01000053505354535053540000000000000000000000000000000000000000000000000000000000000000">Bogota (UTC-5)</option>
+                            <option value= "F000000050535354505344540000000000000000030206000A020600000000000000000000000000C4FFFFFF">Santiago (UTC-4)</option>
+                            <option value= "F000000053575354535753540000000000000000000000000000000000000000000000000000000000000000">Caracas (UTC-4)</option>
+                            <option value= "F0000000415354004144540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Atlantic (UTC-4)</option>
+                            <option value= "B4000000475354004744540000000000000000000A05000204010002000000000000000000000000C4FFFFFF">Greenland (UTC-3)</option>
+                            <option value= "B400000053455354534553540000000000000000000000000000000000000000000000000000000000000000">Buenos Aires (UTC-3)</option>
+                            <option value= "B400000045535354455344540000000000000000020200020A030002000000000000000000000000C4FFFFFF">Brasilia (UTC-3)</option>
+                            <option value= "780000004D4153544D41445400000000000000000905000203050002000000000000000000000000C4FFFFFF">Mid-Atlantic (UTC-2)</option>
+                            <option value= "3C00000057415400574154000000000000000000000000000000000000000000000000000000000000000000">Cape Verde Islands (UTC-1)</option>
+                            <option value= "3C000000415354004144540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Azores (UTC-1)</option>
+                            <option value= "0000000047535400475354000000000000000000000000000000000000000000000000000000000000000000">Casablanca (UTC+0)</option>
+                            <option value= "00000000474D54004253540000000000000000000A05000203050001000000000000000000000000C4FFFFFF">London (UTC+0)</option>
+                            <option value= "C4FFFFFF434553544345445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Belgrade (UTC+1)</option>
+                            <option value= "C4FFFFFF574553545745445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Berlin (UTC+1)</option>
+                            <option value= "C4FFFFFF525354005244540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Paris (UTC+1)</option>
+                            <option value= "C4FFFFFF534353545343445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Sarajevo (UTC+1)</option>
+                            <option value= "C4FFFFFF57415354574153540000000000000000000000000000000000000000000000000000000000000000">West Central Africa (UTC+1)</option>
+                            <option value= "88FFFFFF475453544754445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Athens (UTC+2)</option>
+                            <option value= "88FFFFFF454553544545445400000000000000000905000103050000000000000000000000000000C4FFFFFF">Bucharest (UTC+2)</option>
+                            <option value= "88FFFFFF455354004544540000000000000000000905030205010502000000000000000000000000C4FFFFFF">Cairo (UTC+2)</option>
+                            <option value= "88FFFFFF464C5354464C445400000000000000000A05000403050003000000000000000000000000C4FFFFFF">Helsinki (UTC+2)</option>
+                            <option value= "88FFFFFF4A5354004A5354000000000000000000000000000000000000000000000000000000000000000000">Jerusalem (UTC+2)</option>
+                            <option value= "88FFFFFF53415354534153540000000000000000000000000000000000000000000000000000000000000000">Pretoria (UTC+2)</option>
+                            <option value= "4CFFFFFF415354004144540000000000000000000A01000404010003000000000000000000000000C4FFFFFF">Baghdad (UTC+3)</option>
+                            <option value= "4CFFFFFF41535400415354000000000000000000000000000000000000000000000000000000000000000000">Kuwait (UTC+3)</option>
+                            <option value= "4CFFFFFF525354005244540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Moscow (UTC+3)</option>
+                            <option value= "4CFFFFFF45415354454153540000000000000000000000000000000000000000000000000000000000000000">Nairobi (UTC+3)</option>
+                            <option value= "10FFFFFF41535400415354000000000000000000000000000000000000000000000000000000000000000000">Abu Dhabi (UTC+4)</option>
+                            <option value= "2EFFFFFF495354004944540000000000000000000904020203010002000000000000000000000000C4FFFFFF">Tehran (UTC+3:30)</option>
+                            <option value= "10FFFFFF435354004344540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Baku (UTC+4)</option>
+                            <option value= "F2FEFFFF41535400415354000000000000000000000000000000000000000000000000000000000000000000">Kabul (UTC+4:30)</option>
+                            <option value= "D4FEFFFF455354004544540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Ekaterinburg (UTC+5)</option>
+                            <option value= "D4FEFFFF57415354574153540000000000000000000000000000000000000000000000000000000000000000">Islamabad (UTC+5)</option>
+                            <option value= "B6FEFFFF49535400495354000000000000000000000000000000000000000000000000000000000000000000">New Delhi (UTC+5:30)</option>
+                            <option value= "A7FEFFFF4E5354004E5354000000000000000000000000000000000000000000000000000000000000000000">Kathmandu (UTC+5:45)</option>
+                            <option value= "98FEFFFF4E4353544E43445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Almaty (UTC+6)</option>
+                            <option value= "98FEFFFF43415354434153540000000000000000000000000000000000000000000000000000000000000000">Dhaka (UTC+6)</option>
+                            <option value= "98FEFFFF53525354535253540000000000000000000000000000000000000000000000000000000000000000">Srilanka (UTC+6)</option>
+                            <option value= "7AFEFFFF4D5354004D5354000000000000000000000000000000000000000000000000000000000000000000">Yangon (UTC+6:30)</option>
+                            <option value= "5CFEFFFF53415354534153540000000000000000000000000000000000000000000000000000000000000000">Bangkok (UTC+7)</option>
+                            <option value= "5CFEFFFF4E4153544E41445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Krasnoyarsk (UTC+7)</option>
+                            <option value= "20FEFFFF43535400435354000000000000000000000000000000000000000000000000000000000000000000">Beijing (UTC+8)</option>
+                            <option value= "20FEFFFF4E4553544E45445400000000000000000A05000303050002000000000000000000000000C4FFFFFF">Irkutsk (UTC+8)</option>
+                            <option value= "20FEFFFF41575354415753540000000000000000000000000000000000000000000000000000000000000000">Perth (UTC+8)</option>
+                            <option value= "20FEFFFF4D5053544D5053540000000000000000000000000000000000000000000000000000000000000000">Singapore (UTC+8)</option>
+                            <option value= "20FEFFFF54535400545354000000000000000000000000000000000000000000000000000000000000000000">Taipei (UTC+8)</option>
+                            <option value= "E4FDFFFF4B5354004B5354000000000000000000000000000000000000000000000000000000000000000000">Seoul (UTC+9)</option>
+                            <option value= "E4FDFFFF54535400545354000000000000000000000000000000000000000000000000000000000000000000">Tokyo (UTC+9)</option>
+                            <option value= "E4FDFFFF595354005944540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Yakutsk (UTC+9)</option>
+                            <option value= "C6FDFFFF41435354414344540000000000000000030500020A050002000000000000000000000000C4FFFFFF">Adelaide (UTC+9:30)</option>
+                            <option value= "C6FDFFFF41435354414353540000000000000000000000000000000000000000000000000000000000000000">Darwin (UTC+9:30)</option>
+                            <option value= "A8FDFFFF41455354414553540000000000000000000000000000000000000000000000000000000000000000">Brisbane (UTC+10)</option>
+                            <option value= "A8FDFFFF57505354575053540000000000000000000000000000000000000000000000000000000000000000">Guam (UTC+10)</option>
+                            <option value= "A8FDFFFF54535400544454000000000000000000030500020A010002000000000000000000000000C4FFFFFF">Hobart (UTC+10)</option>
+                            <option value= "A8FDFFFF41455354414544540000000000000000030500020A050002000000000000000000000000C4FFFFFF">Sydney (UTC+10)</option>
+                            <option value= "A8FDFFFF565354005644540000000000000000000A05000303050002000000000000000000000000C4FFFFFF">Vladivostok (UTC+10)</option>
+                            <option value= "6CFDFFFF43505354435053540000000000000000000000000000000000000000000000000000000000000000">Solomon Islands (UTC+11)</option>
+                            <option value= "30FDFFFF4E5A53544E5A44540000000000000000030300020A010002000000000000000000000000C4FFFFFF">Auckland (UTC+12)</option>
+                            <option value= "30FDFFFF46535400465354000000000000000000000000000000000000000000000000000000000000000000">Fiji Islands (UTC+12)</option>
+                            <option value= "F4FCFFFF54535400545354000000000000000000000000000000000000000000000000000000000000000000">Nuku'alofa (UTC+13)</option>
+                            <option value= "B8FCFFFF4B5354004B5354000000000000000000000000000000000000000000000000000000000000000000">Kiribati (UTC+14)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="daylightSavings" data-eeprom="misc_flags" value="0x00000002" onchange="validateInputs()">
+                        <label class="form-check-label" for="daylightSavings">Disable automatic daylight savings adjustment</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dvdRegion" class="form-label">DVD Region 💿</label>
+                        <select class="form-select" id="dvdRegion" data-eeprom="dvd_region" onchange="validateInputs()">
+                            <option value="0x00000000">0 None</option>
+                            <option value="0x00000001" selected>1 USA, Canada</option>
+                            <option value="0x00000002">2 Europe, Japan, Middle East</option>
+                            <option value="0x00000003">3 Southeast Asia, South Korea</option>
+                            <option value="0x00000004">4 Latin America, Australia</option>
+                            <option value="0x00000005">5 Eastern Europe, Russia, Africa</option>
+                            <option value="0x00000006">6 China</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Language 🗣️</label>
+                        <select class="form-select" id="language" data-eeprom="language" onchange="validateInputs()">
+                            <option value="0x00000000">Not Set</option>
+                            <option value="0x00000001" selected>English</option>
+                            <option value="0x00000002">Japanese</option>
+                            <option value="0x00000003">German</option>
+                            <option value="0x00000004">French</option>
+                            <option value="0x00000005">Spanish</option>
+                            <option value="0x00000006">Italian</option>
+                            <option value="0x00000007">Korean</option>
+                            <option value="0x00000008">Chinese</option>
+                            <option value="0x00000009">Portuguese</option>                            
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Video Output 🎥</label>
+                        <div>
+                            <select class="form-select" id="videoStandard" data-eeprom="video_standard" onchange="validateInputs()">
+                                <option value="0x00400100" selected>NTSC</option>
+                                <option value="0x00800300">PAL</option>
+                                <option value="0x00400200">NTSC Japan</option>
+                                <option value="0x00400400">PAL Brazil</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select class="form-select" id="videoAspect" data-eeprom="video_flags" onchange="validateInputs()">
+                                <option value="0x00000000"selected>Normal</option>
+                                <option value="0x00100000">Letterbox</option>
+                                <option value="0x00010000">Widescreen</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="video480p" data-eeprom="video_flags" class="form-check-input" value="0x00080000" onchange="validateInputs()" checked>
+                            <label class="form-check-label" for="video480p">480p</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="video720p" data-eeprom="video_flags" class="form-check-input" value="0x00020000" onchange="validateInputs()" checked>
+                            <label class="form-check-label" for="video720p">720p</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="video1080i" data-eeprom="video_flags" class="form-check-input" value="0x00040000" onchange="validateInputs()">
+                            <label class="form-check-label" for="video1080i">1080i</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="video60hz" data-eeprom="video_flags" class="form-check-input" value="0x00400000" onchange="validateInputs()">
+                            <label class="form-check-label" for="video60hz">60 Hz</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="video50hz" data-eeprom="video_flags" class="form-check-input" value="0x00800000" onchange="validateInputs()">
+                            <label class="form-check-label" for="video50hz">50 Hz</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Audio Output 🔊</label>
+                        <select class="form-select" id="audioOutput" data-eeprom="audio_flags" onchange="validateInputs()">
+                            <option value="0x00000000"selected>Stereo</option>
+                            <option value="0x00000001">Mono</option>
+                            <option value="0x00000002">Surround</option>
+                        </select>
+                        <div>
+                            <input type="checkbox" id="audioAC3" data-eeprom="audio_flags" class="form-check-input" value="0x00010000" onchange="validateInputs()">
+                            <label class="form-check-label" for="audioAC3">AC3</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="audioDTS" data-eeprom="audio_flags" class="form-check-input" value="0x00020000" onchange="validateInputs()">
+                            <label class="form-check-label" for="audioDTS">DTS</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Miscellaneous</label>
+                        <div>
+                            <input type="checkbox" id="miscAutoOff" data-eeprom="misc_flags" class="form-check-input" value="0x00000001" onchange="validateInputs()">
+                            <label class="form-check-label" for="miscAutoOff">Enable 6 hour automatic shut down timer</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="xboxLiveAutoSignIn" data-eeprom="misc_flags" class="form-check-input" value="0x00000004" onchange="validateInputs()">
+                            <label class="form-check-label" for="xboxLiveAutoSignIn">Disable automatic sign into Xbox Live</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="showXblivePoli" data-eeprom="misc_flags" class="form-check-input" value="0x00000008" onchange="validateInputs()">
+                            <label class="form-check-label" for="showXblivePoli">Disable showing Xbox Live policy on next boot</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5">
+        <p>By Ryzee119<a href="https://github.com/Ryzee119/xbox_eeprom_online" target="_blank">
+            <img src="assets/github-mark-white.png" alt="GitHub" class="github-logo">
+        </a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js_crypt_checksum.js"></script>
+    <script src="js_crypt_rc4.js"></script>
+    <script src="js_crypt_sha1.js"></script>
+    <script src="js_utility.js"></script>
+    <script src="js_eeprom.js"></script>
+    <script src="js_main.js"></script>
+</body>
+</html>
