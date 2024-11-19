@@ -87,6 +87,29 @@
                             <button type="button" class="btn btn-secondary" onclick="generateHex(32, 'onlineKey')">Generate</button>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label for="ramTiming" class="form-label">RAM Timing (Required for 1.6 Only)</label>
+                        <select class="form-select" id="ramSelect" onchange="updateRamTiming()">
+                            <option value="000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000">Non 1.6</option>
+                            <option value="68AADD0246458F8F7856BB69010446458F8F7856BB69010446458F8F7856BB69120346458F8F7856BB69020246458F8F7856BB691202">Samsung RAM</option>
+                            <option value="68AADD4246458F8F7856BB69010446458F8F7856BB69010446458F8F7856BB69120446458F8F7856BB69020346458F8F7856BB690203">Hynix RAM</option>
+                        </select>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ramTiming" data-eeprom="ram_timing" data-length="108" data-type="hexadecimal" oninput="validateInputs()">
+                        </div>
+                        <script>
+                            function updateRamTiming() {
+                                document.getElementById('ramTiming').value = document.getElementById('ramSelect').value;
+                                validateInputs();
+                            }
+                        </script>
+                    </div>
+                    <div class="mb-3">
+                        <label for="thermalCalibration" class="form-label">Thermal Sensor Calibration (Required for 1.6 Only) - Change with caution or you might overheat lock out yourself</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="thermalCalibration" data-eeprom="thermal_calibration" data-length="8" data-type="hexadecimal" oninput="validateInputs()">
+                        </div>
+                    </div>
                 </form>
             </div>
 

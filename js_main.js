@@ -7,6 +7,8 @@ window.onload = function () {
     generateHex(32, 'hddKey');
     generateDigits(12, 'serial');
     generateHex(32, 'onlineKey');
+    document.getElementById('ramTiming').value = document.getElementById('ramSelect').value;
+    document.getElementById('thermalCalibration').value = "82518000" // Values from my 1.6 but they change!
 
     // Prefix MAC address with 0050F2 - what xbox uses
     generateHex(12, 'macAddress', '0050F2');
@@ -122,6 +124,14 @@ function generateFile() {
 
         if (eepromField == 'dvd_region') {
             eeprom.writeUint32(EEPROM_USER_SETTINGS_DVD_REGION_OFFSET, hexUint32ToUint32(input.value));
+        }
+
+        if (eepromField == 'ram_timing') {
+            eeprom.write(EEPROM_FACTORY_16_RAM_TIMING_OFFSET, hexStringToUint8Array(input.value));
+        }
+
+        if (eepromField == 'thermal_calibration') {
+            eeprom.write(EEPROM_FACTORY_16_TEMP_CALIBRATION_OFFSET, hexStringToUint8Array(input.value));
         }
     });
 
@@ -252,6 +262,8 @@ function parseFile(input) {
                     let xlive_subnet_mask = eeprom.readUint32(EEPROM_USER_SETTINGS_XLIVE_SUBNET_MASK_OFFSET);
                     let misc_flags = eeprom.readUint32(EEPROM_USER_SETTINGS_MISC_FLAGS_OFFSET);
                     let dvd_region = eeprom.readUint32(EEPROM_USER_SETTINGS_DVD_REGION_OFFSET);
+                    let ram_timings = eeprom.read(EEPROM_FACTORY_16_RAM_TIMING_OFFSET, EEPROM_FACTORY_16_RAM_TIMING_SIZE);
+                    let thermal_calibration = eeprom.read(EEPROM_FACTORY_16_TEMP_CALIBRATION_OFFSET, EEPROM_FACTORY_16_TEMP_CALIBRATION_SIZE);
 
                     console.log("Confounder: " + confounder);
                     console.log("HDD Key: " + hdd_key);
@@ -305,6 +317,19 @@ function parseFile(input) {
                     document.getElementById('daylightSavings').checked = (misc_flags & 0x00000002) ? true : false;
                     document.getElementById('xboxLiveAutoSignIn').checked = (misc_flags & 0x00000004) ? true : false;
                     document.getElementById('showXblivePoli').checked = (misc_flags & 0x00000008) ? true : false;
+
+                    // Ram Timings (1.6)
+                    document.getElementById('ramTiming').value = uint8ArrayToHexString(ram_timings);
+                    if (ram_timings[0x03] == 0x02) {
+                        document.getElementById('ramSelect').value = "68AADD0246458F8F7856BB69010446458F8F7856BB69010446458F8F7856BB69120346458F8F7856BB69020246458F8F7856BB691202";
+                    } else if (ram_timings[0x03] == 0x42) {
+                        document.getElementById('ramSelect').value = "68AADD4246458F8F7856BB69010446458F8F7856BB69010446458F8F7856BB69120446458F8F7856BB69020346458F8F7856BB690203";
+                    } else {
+                        document.getElementById('ramSelect').value = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+                    }
+
+                    // Thermal Calibration (1.6)
+                    document.getElementById('thermalCalibration').value = uint8ArrayToHexString(thermal_calibration);
                     
                     // Todo
                     //document.getElementById('parentalControlGames').value = uint32ToHexUint32(parental_control_games);
