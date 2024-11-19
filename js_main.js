@@ -59,71 +59,71 @@ function generateFile() {
 
         if (eepromField == 'serial_number') {
             // S/N is written as ASCII
-            eeprom.write(EEPROM_FACTORY_SETTINGS_SERIAL_NUMBER_OFFSET, new TextEncoder().encode(input.value));
+            eeprom.write(EEPROM_FACTORY_SERIAL_NUMBER_OFFSET, new TextEncoder().encode(input.value));
         }
 
         if (eepromField == 'mac_address') {
-            eeprom.write(EEPROM_FACTORY_SETTINGS_MAC_ADDRESS_OFFSET, hexStringToUint8Array(input.value));
+            eeprom.write(EEPROM_FACTORY_MAC_ADDRESS_OFFSET, hexStringToUint8Array(input.value));
         }
 
         if (eepromField == 'online_key') {
-            eeprom.write(EEPROM_FACTORY_SETTINGS_ONLINE_KEY_OFFSET, hexStringToUint8Array(input.value));
+            eeprom.write(EEPROM_FACTORY_ONLINE_KEY_OFFSET, hexStringToUint8Array(input.value));
         }
 
         if (eepromField == 'video_standard') {
-            eeprom.writeUint32(EEPROM_FACTORY_SETTINGS_VIDEO_STANDARD_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_FACTORY_VIDEO_STANDARD_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'timezone_data') {
-            eeprom.write(EEPROM_USER_SETTINGS_TIMEZONE_BIAS_OFFSET, hexStringToUint8Array(input.value));
+            eeprom.write(EEPROM_USER_TIMEZONE_BIAS_OFFSET, hexStringToUint8Array(input.value));
         }
 
         if (eepromField == 'language') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_LANGUAGE_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_LANGUAGE_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'video_flags') {
-            eeprom.orUint32(EEPROM_USER_SETTINGS_VIDEO_SETTINGS_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.orUint32(EEPROM_USER_VIDEO_SETTINGS_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'audio_flags') {
-            eeprom.orUint32(EEPROM_USER_SETTINGS_AUDIO_SETTINGS_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.orUint32(EEPROM_USER_AUDIO_SETTINGS_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'parental_control_games') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_PARENTAL_CONTROL_GAMES_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_PARENTAL_CONTROL_GAMES_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'parental_control_passcode') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_PARENTAL_CONTROL_PASSCODE_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_PARENTAL_CONTROL_PASSCODE_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'parental_control_movies') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_PARENTAL_CONTROL_MOVIES_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_PARENTAL_CONTROL_MOVIES_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'xlive_ip_address') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_XLIVE_IP_ADDRESS_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_XLIVE_IP_ADDRESS_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'xlive_dns_address') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_XLIVE_DNS_ADDRESS_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_XLIVE_DNS_ADDRESS_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'xlive_default_gateway_address') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_XLIVE_DEFAULT_GATEWAY_ADDRESS_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_XLIVE_DEFAULT_GATEWAY_ADDRESS_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'xlive_subnet_mask') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_XLIVE_SUBNET_MASK_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_XLIVE_SUBNET_MASK_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'misc_flags') {
-            eeprom.orUint32(EEPROM_USER_SETTINGS_MISC_FLAGS_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.orUint32(EEPROM_USER_MISC_FLAGS_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'dvd_region') {
-            eeprom.writeUint32(EEPROM_USER_SETTINGS_DVD_REGION_OFFSET, hexUint32ToUint32(input.value));
+            eeprom.writeUint32(EEPROM_USER_DVD_REGION_OFFSET, hexUint32ToUint32(input.value));
         }
 
         if (eepromField == 'ram_timing') {
@@ -136,12 +136,12 @@ function generateFile() {
     });
 
     // Write the factory settings checksum
-    checksum = calculateChecksum(eeprom.read(EEPROM_FACTORY_SETTINGS_OFFSET + 4, EEPROM_FACTORY_SETTINGS_SIZE - 4));
-    eeprom.writeUint32(EEPROM_FACTORY_SETTINGS_CHECKSUM_OFFSET, checksum);
+    checksum = calculateChecksum(eeprom.read(EEPROM_FACTORY_OFFSET + 4, EEPROM_FACTORY_SIZE - 4));
+    eeprom.writeUint32(EEPROM_FACTORY_CHECKSUM_OFFSET, checksum);
 
     // Write the user settings checksum
-    checksum = calculateChecksum(eeprom.read(EEPROM_USER_SETTINGS_OFFSET + 4, EEPROM_USER_SETTINGS_SIZE - 4));
-    eeprom.writeUint32(EEPROM_USER_SETTINGS_CHECKSUM_OFFSET, checksum);
+    checksum = calculateChecksum(eeprom.read(EEPROM_USER_OFFSET + 4, EEPROM_USER_SIZE - 4));
+    eeprom.writeUint32(EEPROM_USER_CHECKSUM_OFFSET, checksum);
 
     // Let's do the encryption stages
 
@@ -245,23 +245,23 @@ function parseFile(input) {
                     let confounder = eeprom.read(EEPROM_ENCRYPTED_CONFOUNDER_OFFSET, EEPROM_ENCRYPTED_CONFOUNDER_SIZE);
                     let hdd_key = eeprom.read(EEPROM_ENCRYPTED_HDD_KEY_OFFSET, EEPROM_ENCRYPTED_HDD_KEY_SIZE);
                     let region = eeprom.readUint32(EEPROM_ENCRYPTED_XBOX_REGION_OFFSET);
-                    let serial = eeprom.read(EEPROM_FACTORY_SETTINGS_SERIAL_NUMBER_OFFSET, EEPROM_FACTORY_SETTINGS_SERIAL_NUMBER_SIZE);
-                    let mac_address = eeprom.read(EEPROM_FACTORY_SETTINGS_MAC_ADDRESS_OFFSET, EEPROM_FACTORY_SETTINGS_MAC_ADDRESS_SIZE);
-                    let online_key = eeprom.read(EEPROM_FACTORY_SETTINGS_ONLINE_KEY_OFFSET, EEPROM_FACTORY_SETTINGS_ONLINE_KEY_SIZE);
-                    let video_standard = eeprom.readUint32(EEPROM_FACTORY_SETTINGS_VIDEO_STANDARD_OFFSET);
-                    let timezone_data = eeprom.read(EEPROM_USER_SETTINGS_TIMEZONE_BIAS_OFFSET, EEPROM_USER_SETTINGS_TIMEZONE_DATA_SIZE);
-                    let language = eeprom.readUint32(EEPROM_USER_SETTINGS_LANGUAGE_OFFSET);
-                    let video_flags = eeprom.readUint32(EEPROM_USER_SETTINGS_VIDEO_SETTINGS_OFFSET);
-                    let audio_flags = eeprom.readUint32(EEPROM_USER_SETTINGS_AUDIO_SETTINGS_OFFSET);
-                    let parental_control_games = eeprom.readUint32(EEPROM_USER_SETTINGS_PARENTAL_CONTROL_GAMES_OFFSET);
-                    let parental_control_passcode = eeprom.readUint32(EEPROM_USER_SETTINGS_PARENTAL_CONTROL_PASSCODE_OFFSET);
-                    let parental_control_movies = eeprom.readUint32(EEPROM_USER_SETTINGS_PARENTAL_CONTROL_MOVIES_OFFSET);
-                    let xlive_ip_address = eeprom.readUint32(EEPROM_USER_SETTINGS_XLIVE_IP_ADDRESS_OFFSET);
-                    let xlive_dns_address = eeprom.readUint32(EEPROM_USER_SETTINGS_XLIVE_DNS_ADDRESS_OFFSET);
-                    let xlive_default_gateway_address = eeprom.readUint32(EEPROM_USER_SETTINGS_XLIVE_DEFAULT_GATEWAY_ADDRESS_OFFSET);
-                    let xlive_subnet_mask = eeprom.readUint32(EEPROM_USER_SETTINGS_XLIVE_SUBNET_MASK_OFFSET);
-                    let misc_flags = eeprom.readUint32(EEPROM_USER_SETTINGS_MISC_FLAGS_OFFSET);
-                    let dvd_region = eeprom.readUint32(EEPROM_USER_SETTINGS_DVD_REGION_OFFSET);
+                    let serial = eeprom.read(EEPROM_FACTORY_SERIAL_NUMBER_OFFSET, EEPROM_FACTORY_SERIAL_NUMBER_SIZE);
+                    let mac_address = eeprom.read(EEPROM_FACTORY_MAC_ADDRESS_OFFSET, EEPROM_FACTORY_MAC_ADDRESS_SIZE);
+                    let online_key = eeprom.read(EEPROM_FACTORY_ONLINE_KEY_OFFSET, EEPROM_FACTORY_ONLINE_KEY_SIZE);
+                    let video_standard = eeprom.readUint32(EEPROM_FACTORY_VIDEO_STANDARD_OFFSET);
+                    let timezone_data = eeprom.read(EEPROM_USER_TIMEZONE_BIAS_OFFSET, EEPROM_USER_TIMEZONE_DATA_SIZE);
+                    let language = eeprom.readUint32(EEPROM_USER_LANGUAGE_OFFSET);
+                    let video_flags = eeprom.readUint32(EEPROM_USER_VIDEO_SETTINGS_OFFSET);
+                    let audio_flags = eeprom.readUint32(EEPROM_USER_AUDIO_SETTINGS_OFFSET);
+                    let parental_control_games = eeprom.readUint32(EEPROM_USER_PARENTAL_CONTROL_GAMES_OFFSET);
+                    let parental_control_passcode = eeprom.readUint32(EEPROM_USER_PARENTAL_CONTROL_PASSCODE_OFFSET);
+                    let parental_control_movies = eeprom.readUint32(EEPROM_USER_PARENTAL_CONTROL_MOVIES_OFFSET);
+                    let xlive_ip_address = eeprom.readUint32(EEPROM_USER_XLIVE_IP_ADDRESS_OFFSET);
+                    let xlive_dns_address = eeprom.readUint32(EEPROM_USER_XLIVE_DNS_ADDRESS_OFFSET);
+                    let xlive_default_gateway_address = eeprom.readUint32(EEPROM_USER_XLIVE_DEFAULT_GATEWAY_ADDRESS_OFFSET);
+                    let xlive_subnet_mask = eeprom.readUint32(EEPROM_USER_XLIVE_SUBNET_MASK_OFFSET);
+                    let misc_flags = eeprom.readUint32(EEPROM_USER_MISC_FLAGS_OFFSET);
+                    let dvd_region = eeprom.readUint32(EEPROM_USER_DVD_REGION_OFFSET);
                     let ram_timings = eeprom.read(EEPROM_FACTORY_16_RAM_TIMING_OFFSET, EEPROM_FACTORY_16_RAM_TIMING_SIZE);
                     let thermal_calibration = eeprom.read(EEPROM_FACTORY_16_TEMP_CALIBRATION_OFFSET, EEPROM_FACTORY_16_TEMP_CALIBRATION_SIZE);
 
