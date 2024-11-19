@@ -1,6 +1,6 @@
 // Can set to true in console to run tests against known inputs
 // and asserts the output is correct
-var run_tests = false;
+let run_tests = false;
 
 window.onload = function () {
     generateHex(16, 'confounder');
@@ -154,11 +154,11 @@ function generateFile() {
 
     // SHA1 Stage 1 - perform the first hash calculation over the currently unencrypted area (confounder, hdd key, region)
     // to determine the main sha1 hash
-    var sha1_hash = do_eeprom_sha1_loop(hardware_revision, data_to_encrypt);
+    let sha1_hash = do_eeprom_sha1_loop(hardware_revision, data_to_encrypt);
     console.log("SHA1 HASH: " + sha1_hash);
 
     // SHA1 Stage 2 - perform the second hash calculation over the main sha1 hash to determine the RC4 key
-    var rc4_key = do_eeprom_sha1_loop(hardware_revision, sha1_hash);
+    let rc4_key = do_eeprom_sha1_loop(hardware_revision, sha1_hash);
     console.log("RC4 KEY: " + rc4_key);
 
     // RC4 using the the new key to encrypt the data
@@ -223,7 +223,7 @@ function parseFile(input) {
 
             // Loop through the hardware revisions to find the valid one
             let rc4 = new RC4Context();
-            for (var i = 0; i < hardware_revision.length; i++) {
+            for (let i = 0; i < hardware_revision.length; i++) {
                 // Pull the SHA1 hash from the eeprom file
                 let sha1_hash = eeprom.read(EEPROM_ENCRYPTED_SHA1_HASH_OFFSET, EEPROM_ENCRYPTED_SHA1_HASH_SIZE);
 

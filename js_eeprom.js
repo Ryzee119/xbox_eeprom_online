@@ -91,7 +91,7 @@ class EEPROM {
         if (offset < 0 || offset + length > this.buffer.byteLength) {
             throw new Error('Read out of bounds');
         }
-        var data = new Uint8Array(length);
+        let data = new Uint8Array(length);
         for (let i = 0; i < data.length; i++) {
             data[i] = this.dataView.getUint8(offset + i);
         }
@@ -151,8 +151,8 @@ function do_eeprom_sha1_loop(hardware_revision, data) {
     const sha1_intermedia_retail3_second = [0x01075307, 0xA2f1E037, 0x1186EEEA, 0x88DA9992, 0x168A5609];
 
     // Determine which SHA1 intermediate values to use based on hardware revision
-    var sha1_h_a;
-    var sha1_h_b;
+    let sha1_h_a;
+    let sha1_h_b;
     if (hardware_revision == "0x09") {
         sha1_h_a = sha1_intermediate_debug_first;
         sha1_h_b = sha1_intermediate_debug_second;
@@ -170,7 +170,7 @@ function do_eeprom_sha1_loop(hardware_revision, data) {
         return;
     }
 
-    var sha1_hash = 0;
+    let sha1_hash = 0;
     sha1.reset(sha1_h_a[0], sha1_h_a[1], sha1_h_a[2], sha1_h_a[3], sha1_h_a[4], 512);
     sha1.input(new Uint8Array(data));
     sha1_hash = sha1.result();
@@ -257,7 +257,7 @@ function eepromTest(versionChar, eepromUint8Array) {
         00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
     `;
 
-    var test_blob;
+    let test_blob;
     if (hardware_revision == "0x09") {
         test_blob = hexBlob_debug;
     } else if (hardware_revision == "0x0A") {
