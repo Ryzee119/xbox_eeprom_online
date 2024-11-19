@@ -1,6 +1,6 @@
-// Can set to true in console to run tests against known inputs
+// Can be set to true in console to run tests against known inputs
 // and asserts the output is correct
-let run_tests = false;
+let run_tests = true;
 
 window.onload = function () {
     generateHex(16, 'confounder');
@@ -12,6 +12,16 @@ window.onload = function () {
 
     // Prefix MAC address with 0050F2 - what xbox uses
     generateHex(12, 'macAddress', '0050F2');
+
+    // Add event listeners to all the inputs to validate them on changes
+    const inputs = document.querySelectorAll('.form-control, select.form-select, input[type="checkbox"]');
+    inputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            input.onchange = validateInputs;
+        } else {
+            input.oninput = validateInputs;
+        }
+    });
 
     // Put some known values in the fields for testing
     if (run_tests) {
@@ -27,7 +37,7 @@ window.onload = function () {
 
 function generateFile() {
     const littleEndian = true;
-    eeprom = new EEPROM(EEPROM_SIZE, littleEndian);
+    let eeprom = new EEPROM(EEPROM_SIZE, littleEndian);
 
     const inputs = document.querySelectorAll('.form-control, select.form-select, input[type="checkbox"]');
     inputs.forEach(input => {
@@ -189,7 +199,7 @@ function saveFile(eeprom8_array) {
     const a = document.createElement('a');
     a.href = url;
 
-    // xbox_eeprom_YYYY_MM_DD_HH_MM.bin
+    // xbox_eeprom_YYYY_MM_DD_HH_MM_SS.bin
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -218,7 +228,6 @@ function parseFile(input) {
             eeprom.write(0, file_data);
             console.log(file_data)
 
-            // create a array of all the hardware revisions 0x09, 0x0A, 0x0B and 0x0C
             hardware_revision = ["0x09", "0x0A", "0x0B", "0x0C"];
 
             // Loop through the hardware revisions to find the valid one
@@ -235,7 +244,7 @@ function parseFile(input) {
                 let data_to_decrypt = eeprom.read(EEPROM_ENCRYPTED_CONFOUNDER_OFFSET, EEPROM_ENCRYPTED_CONFOUNDER_SIZE + EEPROM_ENCRYPTED_HDD_KEY_SIZE + EEPROM_ENCRYPTED_XBOX_REGION_SIZE);
                 let decrypted_result = rc4.crypt(data_to_decrypt);
 
-                // To verify it's valid, to a SHA1 over the decrypted data and verify the is the same as the one in the eeprom file
+                // To verify it's valid, to a SHA1 over the decrypted data and verify it is the same as the one in the eeprom file
                 let sha1_hash_test = do_eeprom_sha1_loop(hardware_revision[i], decrypted_result);
                 if (arraysEqual(sha1_hash_test, sha1_hash)) {
                     console.log("Found valid hardware revision: " + hardware_revision[i]);
@@ -265,27 +274,6 @@ function parseFile(input) {
                     let ram_timings = eeprom.read(EEPROM_FACTORY_16_RAM_TIMING_OFFSET, EEPROM_FACTORY_16_RAM_TIMING_SIZE);
                     let thermal_calibration = eeprom.read(EEPROM_FACTORY_16_TEMP_CALIBRATION_OFFSET, EEPROM_FACTORY_16_TEMP_CALIBRATION_SIZE);
 
-                    console.log("Confounder: " + confounder);
-                    console.log("HDD Key: " + hdd_key);
-                    console.log("Region: " + region);
-                    console.log("Serial: " + serial);
-                    console.log("MAC Address: " + mac_address);
-                    console.log("Online Key: " + online_key);
-                    console.log("Video Standard: " + video_standard);
-                    console.log("Timezone Data: " + timezone_data);
-                    console.log("Language: " + language);
-                    console.log("Video Flags: " + video_flags);
-                    console.log("Audio Flags: " + audio_flags);
-                    console.log("Parental Control Games: " + parental_control_games);
-                    console.log("Parental Control Passcode: " + parental_control_passcode);
-                    console.log("Parental Control Movies: " + parental_control_movies);
-                    console.log("XLive IP Address: " + xlive_ip_address);
-                    console.log("XLive DNS Address: " + xlive_dns_address);
-                    console.log("XLive Default Gateway Address: " + xlive_default_gateway_address);
-                    console.log("XLive Subnet Mask: " + xlive_subnet_mask);
-                    console.log("Misc Flags: " + misc_flags);
-                    console.log("DVD Region: " + dvd_region);
-
                     // Apply the data to the form
                     document.getElementById('hardwareRevision').value = hardware_revision[i];
                     document.getElementById('confounder').value = uint8ArrayToHexString(confounder);
@@ -309,8 +297,8 @@ function parseFile(input) {
 
                     // Audio Flags
                     document.getElementById('audioOutput').value = uint32ToHexUint32(audio_flags & 0x00000003);
-                    document.getElementById('audioAC3').checked  = (audio_flags & 0x00010000) ? true : false;
-                    document.getElementById('audioDTS').checked  = (audio_flags & 0x00020000) ? true : false;
+                    document.getElementById('audioAC3').checked = (audio_flags & 0x00010000) ? true : false;
+                    document.getElementById('audioDTS').checked = (audio_flags & 0x00020000) ? true : false;
 
                     // Misc Flags
                     document.getElementById('miscAutoOff').checked = (misc_flags & 0x00000001) ? true : false;
@@ -330,7 +318,7 @@ function parseFile(input) {
 
                     // Thermal Calibration (1.6)
                     document.getElementById('thermalCalibration').value = uint8ArrayToHexString(thermal_calibration);
-                    
+
                     // Todo
                     //document.getElementById('parentalControlGames').value = uint32ToHexUint32(parental_control_games);
                     //document.getElementById('parentalControlPasscode').value = uint32ToHexUint32(parental_control_passcode);
