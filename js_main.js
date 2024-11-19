@@ -342,8 +342,11 @@ function parseFile(input) {
 
                     validateInputs();
 
+                    return;
                 }
             }
+            alert("Invalid EEPROM file, unable to decrypt");
+            return;
         };
         reader.readAsArrayBuffer(file);
     } else {

@@ -166,7 +166,7 @@ function do_eeprom_sha1_loop(hardware_revision, data) {
         sha1_h_a = sha1_intermedia_retail3_first;
         sha1_h_b = sha1_intermedia_retail3_second;
     } else {
-        alert("Invalid hardware revision.");
+        alert("Invalid hardware revision or eeprom fil;e");
         return;
     }
 
