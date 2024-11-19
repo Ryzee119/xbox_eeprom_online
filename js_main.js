@@ -1,6 +1,6 @@
 // Can be set to true in console to run tests against known inputs
 // and asserts the output is correct
-let run_tests = true;
+let run_tests = false;
 
 window.onload = function () {
     generateHex(16, 'confounder');
