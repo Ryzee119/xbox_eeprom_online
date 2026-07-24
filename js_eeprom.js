@@ -139,16 +139,16 @@ function do_eeprom_sha1_loop(hardware_revision, data) {
     const sha1_intermediate_debug_second = [0x5D7A9C6B, 0xE1922BEB, 0xB82CCDBC, 0x3137AB34, 0x486B52B3];
 
     // 1.0
-    const sha1_intermedia_retail1_first = [0x72127625, 0x336472B9, 0xBE609BEA, 0xF55E226B, 0x99958DAC];
-    const sha1_intermedia_retail1_second = [0x76441D41, 0x4DE82659, 0x2E8EF85E, 0xB256FACA, 0xC4FE2DE8];
+    const sha1_intermediate_retail1_first = [0x72127625, 0x336472B9, 0xBE609BEA, 0xF55E226B, 0x99958DAC];
+    const sha1_intermediate_retail1_second = [0x76441D41, 0x4DE82659, 0x2E8EF85E, 0xB256FACA, 0xC4FE2DE8];
 
     // 1.1 to 1.5
-    const sha1_intermedia_retail2_first = [0x39B06E79, 0xC9BD25E8, 0xDBC6B498, 0x40B4389D, 0x86BBD7ED];
-    const sha1_intermedia_retail2_second = [0x9B49BED3, 0x84B430FC, 0x6B8749CD, 0xEBFE5FE5, 0xD96E7393];
+    const sha1_intermediate_retail2_first = [0x39B06E79, 0xC9BD25E8, 0xDBC6B498, 0x40B4389D, 0x86BBD7ED];
+    const sha1_intermediate_retail2_second = [0x9B49BED3, 0x84B430FC, 0x6B8749CD, 0xEBFE5FE5, 0xD96E7393];
 
     // 1.6
-    const sha1_intermedia_retail3_first = [0x8058763A, 0xF97D4E0E, 0x865A9762, 0x8A3D920D, 0x08995B2C];
-    const sha1_intermedia_retail3_second = [0x01075307, 0xA2f1E037, 0x1186EEEA, 0x88DA9992, 0x168A5609];
+    const sha1_intermediate_retail3_first = [0x8058763A, 0xF97D4E0E, 0x865A9762, 0x8A3D920D, 0x08995B2C];
+    const sha1_intermediate_retail3_second = [0x01075307, 0xA2F1E037, 0x1186EEEA, 0x88DA9992, 0x168A5609];
 
     // Determine which SHA1 intermediate values to use based on hardware revision
     let sha1_h_a;
@@ -157,16 +157,16 @@ function do_eeprom_sha1_loop(hardware_revision, data) {
         sha1_h_a = sha1_intermediate_debug_first;
         sha1_h_b = sha1_intermediate_debug_second;
     } else if (hardware_revision == "0x0A") {
-        sha1_h_a = sha1_intermedia_retail1_first;
-        sha1_h_b = sha1_intermedia_retail1_second;
+        sha1_h_a = sha1_intermediate_retail1_first;
+        sha1_h_b = sha1_intermediate_retail1_second;
     } else if (hardware_revision == "0x0B") {
-        sha1_h_a = sha1_intermedia_retail2_first;
-        sha1_h_b = sha1_intermedia_retail2_second;
+        sha1_h_a = sha1_intermediate_retail2_first;
+        sha1_h_b = sha1_intermediate_retail2_second;
     } else if (hardware_revision == "0x0C") {
-        sha1_h_a = sha1_intermedia_retail3_first;
-        sha1_h_b = sha1_intermedia_retail3_second;
+        sha1_h_a = sha1_intermediate_retail3_first;
+        sha1_h_b = sha1_intermediate_retail3_second;
     } else {
-        alert("Invalid hardware revision or eeprom fil;e");
+        alert("Invalid hardware revision or eeprom file");
         return;
     }
 
@@ -200,7 +200,7 @@ function eepromTest(versionChar, eepromUint8Array) {
         00 00 00 00 00 00 82 51 80 00 00 00 00 00 00 00
     `;
 
-    const hexBlock10 = `
+    const hexBlob10 = `
         4E 90 E5 78 4F 78 60 2C 02 09 C6 66 E8 4E 92 79 
         D9 5C 83 44 A6 F4 4D 47 DB 59 DF 7E 02 6E 49 B0 
         2F 45 C9 C6 F0 B5 F1 22 74 79 BC 0D E0 BD 3C 64 
@@ -238,7 +238,7 @@ function eepromTest(versionChar, eepromUint8Array) {
         00 00 00 00 00 00 82 51 80 00 00 00 00 00 00 00
     `;
 
-    const hexBlock16 = `
+    const hexBlob16 = `
         2E F5 36 16 81 21 71 70 4B 9D 18 2D 6A 0C B4 33 
         05 3F F2 DC 7C 79 06 02 5B B9 2B D7 69 34 38 9A 
         00 FE 2D 21 17 6F F7 68 4B C9 84 DF 2B 64 2F 84 
@@ -261,11 +261,11 @@ function eepromTest(versionChar, eepromUint8Array) {
     if (hardware_revision == "0x09") {
         test_blob = hexBlob_debug;
     } else if (hardware_revision == "0x0A") {
-        test_blob = hexBlock10;
+        test_blob = hexBlob10;
     } else if (hardware_revision == "0x0B") {
         test_blob = hexBlob11_14;
     } else if (hardware_revision == "0x0C") {
-        test_blob = hexBlock16;
+        test_blob = hexBlob16;
     } else {
         console.assert("Invalid hardware revision.");
     }
