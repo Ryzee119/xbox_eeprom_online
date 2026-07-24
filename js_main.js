@@ -146,7 +146,7 @@ function generateFile() {
     });
 
     // Write the factory settings checksum
-    checksum = calculateChecksum(eeprom.read(EEPROM_FACTORY_OFFSET + 4, EEPROM_FACTORY_SIZE - 4));
+    let checksum = calculateChecksum(eeprom.read(EEPROM_FACTORY_OFFSET + 4, EEPROM_FACTORY_SIZE - 4));
     eeprom.writeUint32(EEPROM_FACTORY_CHECKSUM_OFFSET, checksum);
 
     // Write the user settings checksum
@@ -156,7 +156,7 @@ function generateFile() {
     // Let's do the encryption stages
 
     // Read revision - this changes the SHA1 intermediate values
-    hardware_revision = document.getElementById("hardwareRevision").value;
+    let hardware_revision = document.getElementById("hardwareRevision").value;
 
     const encrypted_start_offset = EEPROM_ENCRYPTED_CONFOUNDER_OFFSET;
     const encrypted_size = EEPROM_ENCRYPTED_CONFOUNDER_SIZE + EEPROM_ENCRYPTED_HDD_KEY_SIZE + EEPROM_ENCRYPTED_XBOX_REGION_SIZE;
@@ -174,7 +174,7 @@ function generateFile() {
     // RC4 using the the new key to encrypt the data
     const rc4 = new RC4Context();
     rc4.init(rc4_key);
-    rc4_result = rc4.crypt(data_to_encrypt);
+    let rc4_result = rc4.crypt(data_to_encrypt);
     console.log("RC4 RESULT: " + rc4_result);
 
     // Write the SHA1 hash to the EEPROM image
@@ -220,15 +220,15 @@ function parseFile(input) {
     const littleEndian = true;
     const file = input.files[0];
     if (file && file.size === 256) {
-        eeprom = new EEPROM(EEPROM_SIZE, littleEndian);
+        let eeprom = new EEPROM(EEPROM_SIZE, littleEndian);
 
         const reader = new FileReader();
         reader.onload = function (event) {
-            file_data = new Uint8Array(event.target.result);
+            let file_data = new Uint8Array(event.target.result);
             eeprom.write(0, file_data);
             console.log(file_data)
 
-            hardware_revision = ["0x09", "0x0A", "0x0B", "0x0C"];
+            let hardware_revision = ["0x09", "0x0A", "0x0B", "0x0C"];
 
             // Loop through the hardware revisions to find the valid one
             let rc4 = new RC4Context();
@@ -237,8 +237,8 @@ function parseFile(input) {
                 let sha1_hash = eeprom.read(EEPROM_ENCRYPTED_SHA1_HASH_OFFSET, EEPROM_ENCRYPTED_SHA1_HASH_SIZE);
 
                 // Determine the RC4 decryption key
-                let rc4_decypt_key = do_eeprom_sha1_loop(hardware_revision[i], sha1_hash);
-                rc4.init(rc4_decypt_key);
+                let rc4_decrypt_key = do_eeprom_sha1_loop(hardware_revision[i], sha1_hash);
+                rc4.init(rc4_decrypt_key);
 
                 // Decrypt the data
                 let data_to_decrypt = eeprom.read(EEPROM_ENCRYPTED_CONFOUNDER_OFFSET, EEPROM_ENCRYPTED_CONFOUNDER_SIZE + EEPROM_ENCRYPTED_HDD_KEY_SIZE + EEPROM_ENCRYPTED_XBOX_REGION_SIZE);
