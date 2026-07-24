@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create and modify Original Xbox EEPROM images from within your web-browser.">
     <title>Xbox EEPROM Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="xbox-theme">
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Original Xbox EEPROM Online</h1>
-        <div class="d-flex justify-content-end mb-3">
-            <button type="button" class="btn btn-success me-2" id="generateBtn" onclick="generateFile()" disabled>Download</button>
+    <main class="container mt-5">
+        <h1 class="text-center mb-5">Original Xbox EEPROM Online</h1>
+        <div class="d-flex justify-content-end mb-4">
+            <button type="button" class="btn btn-success me-3 shadow-sm" id="generateBtn" onclick="generateFile()" disabled>Download EEPROM</button>
             <input type="file" id="uploadFile" onchange="parseFile(this)" class="file-input">
-            <label for="uploadFile" class="btn btn-outline-light custom-file-label">Upload</label>
+            <label for="uploadFile" class="custom-file-label shadow-sm">Upload EEPROM</label>
         </div>
         <ul class="nav nav-tabs" id="tabMenu" role="tablist">
             <li class="nav-item">
@@ -296,11 +300,11 @@
                 </form>
             </div>
         </div>
-    </div>
+    </main>
 
-    <footer class="text-center mt-5">
-        <p>By Ryzee119<a href="https://github.com/Ryzee119/xbox_eeprom_online" target="_blank">
-            <img src="assets/github-mark-white.png" alt="GitHub" class="github-logo">
+    <footer class="text-center">
+        <p>Created by <a href="https://github.com/Ryzee119" target="_blank">Ryzee119</a> | <a href="https://github.com/Ryzee119/xbox_eeprom_online" target="_blank">
+            View on GitHub <img src="assets/github-mark-white.png" alt="GitHub" class="github-logo">
         </a></p>
     </footer>
 
